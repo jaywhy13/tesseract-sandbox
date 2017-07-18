@@ -34,6 +34,18 @@ def get_file_from_request(request):
     image = request.files["image"]
     return image if image.filename else None
 
+
+def get_image_filename(image_id):
+    matches = [
+        file for file in os.listdir(UPLOAD_FOLDER)
+        if image_id == os.path.splitext(file)[0]]
+    return matches[0]
+
+
+def get_image_path(image_id):
+    return os.path.join(UPLOAD_FOLDER, get_image_filename(image_id))
+
+
 def save_image(image):
     """ Saves the image and returns the ID
     """
