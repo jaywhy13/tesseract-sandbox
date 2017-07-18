@@ -62,3 +62,10 @@ def upload():
         return redirect(url_for("home"))
     image_id = save_image(image)
     return redirect(url_for("preview", image_id=image_id))
+
+
+@app.route("/preview/<image_id>", methods=['GET'])
+def preview(image_id):
+    image = get_image_filename(image_id)
+    return render_template("preview.html", image=image, image_id=image_id)
+
