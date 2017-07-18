@@ -20,7 +20,7 @@ app.wsgi_app = SharedDataMiddleware(app.wsgi_app, {
 app.secret_key = 'super secret key'
 app.config['SESSION_TYPE'] = 'filesystem'
 
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif', 'pdf'])
 
 
 @app.route("/")
@@ -53,6 +53,7 @@ def save_image(image):
     filename = "{}{}".format(str(uuid.uuid1()), ext)
     image.save(os.path.join(UPLOAD_FOLDER, filename))
     return os.path.splitext(filename)[0]
+
 
 @app.route("/upload", methods=['POST'])
 def upload():
