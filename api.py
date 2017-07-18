@@ -69,3 +69,26 @@ def preview(image_id):
     image = get_image_filename(image_id)
     return render_template("preview.html", image=image, image_id=image_id)
 
+
+@app.route("/process_image/<image_id>/<op>", methods=['GET'])
+def process_image(image_id, op):
+    filename = get_image_filename(image_id)
+    path = get_image_path(image_id)
+    ext = os.path.splitext(filename)[1]
+    image = cv2.imread(path)
+    print("Converting {} to grayscale".format(image_id))
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    if op == "thresh":
+        print("Apply thresh")
+        gray = cv2.threshold(gray, 0, 255,
+                             cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
+    elif op == "blur":
+        print("Applying blur")
+        gray = cv2.medianBlur(gray, 3)
+    image_id = "{}-{}".format(image_id, op)
+    filename = "{}{}".format(image_id, ext)
+    path = os.path.join(UPLOAD_FOLDER, filename)
+    print("Writing result to %s" % path)
+    cv2.imwrite(path, gray)
+    text = pytesseract.image_to_string(Image.open(path))
+    return jsonify(image=filename, text=text)
