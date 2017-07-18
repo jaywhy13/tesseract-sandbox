@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="container" id="app">
+    <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            <img src="/uploads/{{ image }}" class="preview">
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            <img v-if="processedImageUrl" v-bind:src="processedImageUrl" class="processed" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            <form action="/">
+                Preprocess: 
+                <select name="preprocess" id="preprocess" v-model="processOperation">
+                    <option value="">None</option>
+                    <option value="thresh">Thresh</option>
+                    <option value="blur">Blur</option>
+                </select>
+                <button type="button" class="btn btn-default" v-on:click="processImage">Extract Text</button>
+            </form>            
+        </div>
+    </div>
+    <div class="row">
+        <textarea rows="20" cols="80" v-model="extractedText">
+        </textarea>
+    </div>
+</div>
+{% endblock body %}
+{% block extra_scripts %}
+<script type="text/javascript">
+    $(document).ready(function(){
+        app.imageId = "{{ image_id }}";
+    })
+</script>    
+{% endblock extra_scripts %}
