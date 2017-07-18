@@ -28,6 +28,25 @@ def home():
     return render_template('home.html')
 
 
+def get_file_from_request(request):
+    if "image" not in request.files:
+        return None
+    image = request.files["image"]
+    return image if image.filename else None
+
+def save_image(image):
+    """ Saves the image and returns the ID
+    """
+    ext = os.path.splitext(image.filename)[1] or ".jpg"
+    filename = "{}{}".format(str(uuid.uuid1()), ext)
+    image.save(os.path.join(UPLOAD_FOLDER, filename))
+    return os.path.splitext(filename)[0]
+
 @app.route("/upload", methods=['POST'])
 def upload():
-    pass
+    image = get_file_from_request(request)
+    if not image:
+        flash("Please upload an image", category="error")
+        return redirect(url_for("home"))
+    image_id = save_image(image)
+    return redirect(url_for("preview", image_id=image_id))
